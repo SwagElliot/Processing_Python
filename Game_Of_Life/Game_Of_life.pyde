@@ -1,22 +1,26 @@
 from random import choice
 
-GRID_W = 30
-GRID_H = 30
+GRID_W = 59
+GRID_H = 59
+
+play = False;
 
 SZ= 20
 
 generation = 0
 
 def setup():
+    #noStroke()
     global SZ,cellList
-    size(600, 600)
+    size(700, 700)
     SZ = width // GRID_W +1
     cellList = createCellList()
     
 def draw():
     global generation, cellList
-    frameRate(10)
-    cellList = update(cellList)
+    frameRate(5)
+    if play == True:
+        cellList = update(cellList)
     for row in cellList:
         for cell in row:
             cell.display()
@@ -29,15 +33,13 @@ def update(cellList):
             newList[r].append(Cell(c,r,cell.checkNeighbors()))
     return newList [::]
 
-        
-
 def createCellList():
     newList=[]
     for j in range(GRID_H):
         newList.append([])
         for i in range(GRID_W):
-            newList [j].append(Cell(i,j,choice([0,1])))
-    newList [GRID_H//2][GRID_W//2].state = 1
+          #  newList [j].append(Cell(i,j, choice([0,1])))
+            newList [j].append(Cell(i,j))
     return newList
         
 class Cell:
@@ -66,3 +68,26 @@ class Cell:
         if neighbs == 3:
             return 1
         return 0
+    def mouseOn(self):
+        if SZ*self.r < mouseX < SZ*self.r + SZ and SZ*self.c < mouseY < SZ*self.c + SZ:
+            if self.state == 0:
+                self.state = 1
+            else: self.state = 0
+        return 0
+        
+    
+def keyPressed():
+    global play
+    if key == ' ':
+        if play == True:
+            play = False
+        elif play == False:
+            play = True
+            
+def mousePressed():
+    global cellList, state
+    for row in cellList:
+        for cell in row:
+            cell.mouseOn()
+
+    
